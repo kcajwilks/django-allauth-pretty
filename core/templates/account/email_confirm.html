@@ -1,0 +1,48 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11">
+            <!-- Social forgot password form-->
+            <div class="card my-5">
+                <div class="card-body p-5 text-center"><div class="h3 font-weight-light mb-0">Confirm E-mail Address</div></div>
+                <hr class="my-0" />
+                <div class="card-body p-5">
+                    {% if confirmation %}
+
+                    {% user_display confirmation.email_address.user as user_display %}
+
+                    <div class="text-center small text-muted mb-4">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</div>
+                    <!-- Forgot password form-->
+                    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">{% csrf_token %}
+
+                        <!-- Form Group (reset password button)    -->
+                        <div class="form-group mb-0"><button class="btn btn-primary" type="submit">Confirm</button></div>
+                    </form>
+                    {% else %}
+                    {% url 'account_email' as email_url %}
+
+                    <p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+                    {% endif %}
+                </div>
+                <hr class="my-0" />
+                <div class="card-body px-5 py-4">
+                    <div class="small text-center">
+                        New user?
+                        <a href="auth-register-social.html">Create an account!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

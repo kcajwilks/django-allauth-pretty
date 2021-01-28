@@ -1,0 +1,57 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+      <div class="col-xl-8 col-lg-9">
+          <!-- Social registration form-->
+          <div class="card my-5">
+              <div class="card-body p-5 text-center">
+                  <div class="h3 font-weight-light mb-3">Create an Account</div>
+                  {% get_providers as socialaccount_providers %}
+
+                  {% if socialaccount_providers %}
+                  <div class="small text-muted mb-2">Sign in using...</div>
+                  
+                  <div class="socialaccount_ballot">
+                  
+                    <ul class="socialaccount_providers">
+                      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                    </ul>
+                  
+                    <div class="login-or">{% trans 'or' %}</div>
+                  
+                  </div>
+                    <!-- Social login links-->
+                    <a class="btn btn-icon btn-facebook mx-1" href="#!"><i class="fab fa-facebook-f fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-github mx-1" href="#!"><i class="fab fa-github fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-google mx-1" href="#!"><i class="fab fa-google fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-twitter mx-1" href="#!"><i class="fab fa-twitter fa-fw fa-sm"></i></a>
+                  {% include "socialaccount/snippets/login_extra.html" %}
+
+                  {% endif %}
+              </div>
+              <hr class="my-0" />
+              <div class="card-body p-5">
+                  <div class="text-center small text-muted mb-4">...or enter your information below.</div>
+                  <!-- Login form-->
+                  {% include 'account/forms/signup.html' %}
+
+              </div>
+              <hr class="my-0" />
+              <div class="card-body px-5 py-4">
+                  <div class="small text-center">
+                      Have an account?
+                      <a href="{{ login_url }}">Sign in!</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %}

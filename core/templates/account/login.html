@@ -1,0 +1,60 @@
+{% extends "account/base.html" %}
+<!--  -->
+{% load i18n %}
+{% load account socialaccount %}
+<!--  -->
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11">
+          <!-- Social login form-->
+          <div class="card my-5">
+              <div class="card-body p-5 text-center">
+                  <div class="h3 font-weight-light mb-3">Sign In</div>
+                  {% get_providers as socialaccount_providers %}
+
+                  {% if socialaccount_providers %}
+                  <p>{% blocktrans with site.name as site_name %}Please sign in with one
+                  of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+                  for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+                  
+                  <div class="socialaccount_ballot">
+                  
+                    <ul class="socialaccount_providers">
+                      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                    </ul>
+                  
+                    <div class="login-or">{% trans 'or' %}</div>
+                  
+                  </div>
+                    <!-- Social login links-->
+                    <a class="btn btn-icon btn-facebook mx-1" href="#!"><i class="fab fa-facebook-f fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-github mx-1" href="#!"><i class="fab fa-github fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-google mx-1" href="#!"><i class="fab fa-google fa-fw fa-sm"></i></a>
+                    <a class="btn btn-icon btn-twitter mx-1" href="#!"><i class="fab fa-twitter fa-fw fa-sm"></i></a>
+                  {% include "socialaccount/snippets/login_extra.html" %}
+
+                  {% endif %}
+
+              </div>
+              <hr class="my-0" />
+              <div class="card-body p-5">
+                  <!-- Login form-->
+                  {% include 'account/forms/login.html' %}
+              </div>
+              <hr class="my-0" />
+              <div class="card-body px-5 py-4">
+                  <div class="small text-center">
+                      New user?
+                      <a href="{{ signup_url }}">Create an account!</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

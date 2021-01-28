@@ -1,0 +1,76 @@
+{% load i18n %}{% load widget_tweaks %}
+<form class="login" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {% for hidden_field in form.hidden_fields %}
+        {{ hidden_field }}
+    {% endfor %}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% for field in form.visible_fields %}
+        {% if field.name == 'login' %}
+            {% if form.is_bound %}
+            {% comment %} Bound is a submitted form with returning data {% endcomment %}
+                {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                        {{ error }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label class="text-gray-600 small" for="{{field.name}}">Username</label>
+                        {% render_field field class="form-control form-control-solid" aria-label="Login" aria-describedby="login"%}
+                    </div>
+                {% endif %}
+            {% else %}
+                <label class="text-gray-600 small" for="{{ field.name }}">Username</label>
+                {% render_field field class="form-control form-control-solid" aria-label="Login" aria-describedby="login"%}
+            {% endif %}
+        {% endif %}
+        {% if field.name == 'password' %}
+            {% if form.is_bound %}
+            {% comment %} Bound is a submitted form with returning data {% endcomment %}
+                {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                        {{ error }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label class="text-gray-600 small" for="{{field.name}}">Password</label>
+                        {% render_field field class="form-control form-control-solid" aria-label="Password" aria-describedby="password"%}
+                    </div>
+                {% endif %}
+            {% else %}
+                <label class="text-gray-600 small" for="{{ field.name }}">Password</label>
+                {% render_field field class="form-control form-control-solid" aria-label="Password" aria-describedby="password"%}
+            {% endif %}
+        {% endif %}
+        {% if field.name == 'remember' %}
+        <!-- Form Group (login box)-->
+        <!-- <div class="form-group d-flex align-items-center justify-content-between mb-0">
+            <div class="custom-control custom-control-solid custom-checkbox">
+                {% render_field field class="custom-control-input small" %}
+                <label class="custom-control-label" for="{{ field.name }}">Remember password</label>
+            </div>
+        </div> -->
+        {% endif %}
+
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+
+    <!-- Form Group (forgot password link)-->
+    <div class="form-group"><a class="small" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a></div>
+
+</form>

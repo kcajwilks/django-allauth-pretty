@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account %}
+{% user_display user %}
+{% block main %}<main>
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+        <div class="container-fluid">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="user"></i></div>
+                            Account Settings - Email Settings
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main page content-->
+    <div class="container mt-4">
+      <!-- Account page navigation-->
+      <nav class="nav nav-borders">
+        <a class="nav-link " href="/accounts/profile/">My Profile</a>
+        <a class="nav-link active ml-0" href="/accounts/email/">Email Settings</a>
+        <a class="nav-link" href="/accounts/password/change/">Change Password</a>
+      </nav>
+      <hr class="mt-0 mb-4" />
+      <!-- Email Address -->
+      <div class="card card-header-actions mb-4">
+          <div class="card-header">
+              Email Addresses
+          </div>
+          {% if user.emailaddress_set.all %}
+          
+          <form action="{% url 'account_email' %}" class="email_list" method="post">
+          {% csrf_token %}
+          <fieldset class="blockLabels">
+          
+            {% for emailaddress in user.emailaddress_set.all %}
+            <div class="card-body">
+              <!-- Email Address-->
+              <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
+                      <div class="ml-4">
+                        <label for="email_radio_{{forloop.counter}}" class="{% if emailaddress.primary %}primary_email{%endif%}">
+                          <input id="email_radio_{{forloop.counter}}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{emailaddress.email}}"/>
+                          {{ emailaddress.email }}
+                          <div class="text-xs text-muted">{% if emailaddress.verified %}Verified{%else%}Unverified - requires email confirmation to make primary address{%endif%}</div>
+                      </div>
+                  </div>
+                  <div class="ml-4 small"><div class="buttonHolder">
+                    {% if emailaddress.verified %}<div class="badge badge-info mr-3">Verified</div>{% else %}<button class="btn btn-orange btn-icon" type="submit" name="action_send" data-toggle="tooltip" data-placement="top" title="" data-original-title="Resend verification email">
+                      <i class="fas fa-envelope"></i></button>{% endif %}
+
+                    {% if emailaddress.primary %}<div class="badge badge-light mr-3">Primary</div>{% elif emailaddress.verified %}
+                      <button class="btn btn-teal btn-icon" type="submit" name="action_primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Make this your primary email">
+                        <i class="fas fa-inbox"></i></button>{% endif %}
+
+                    {% if emailaddress.primary %} {%else %}
+                      <button class="btn btn-red btn-icon" type="submit" name="action_remove" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete email address">
+                          <i class="fas fa-trash-alt"></i>
+                      </button>{% endif %}
+                </div>
+                  </div>
+              </div>
+              <hr />
+          </div>
+    
+            {% endfor %}
+          
+
+          
+          </fieldset>
+          </form>
+          
+          {% else %}
+          <p><strong>{% trans 'Warning:'%}</strong> {% trans "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc." %}</p>
+          
+          {% endif %}
+      </div>
+      <hr class="mt-0 mb-4" />
+      <!-- Payment methods card-->
+      <div class="card card-header-actions mb-4">
+          <div class="card-header">
+              Add Email Address
+          </div>
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="ml-4">
+            {% if can_add_email %}
+            {% include 'account/forms/email.html' %}
+            {% endif %}
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+  </div>
+
+</main>{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+(function() {
+  var message = "{% trans 'Do you really want to remove the selected e-mail address?' %}";
+  var actions = document.getElementsByName('action_remove');
+  if (actions.length) {
+    actions[0].addEventListener("click", function(e) {
+      if (! confirm(message)) {
+        e.preventDefault();
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}
